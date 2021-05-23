@@ -5,13 +5,18 @@
 
   function prompt_pulumistack() {
     # Check working directory is a pulumi project
-    if [ ! -f "./Pulumi.yml" ]; then
+    local ext
+    if [ -f "./Pulumi.yaml" ]; then
+      ext="yaml"
+    elif [ -f "./Pulumi.yml" ]; then
+      ext="yml"
+    else
       return
     fi
 
     # Check pulumi workspace file exist
     local pjt_name=$(basename $PWD)
-    local pjt_hash=$(echo -n $PWD/Pulumi.yml | sha1sum | head -c 40)
+    local pjt_hash=$(echo -n $PWD/Pulumi.${ext} | sha1sum | head -c 40)
     local ws_path="$HOME/.pulumi/workspaces/${pjt_name}-${pjt_hash}-workspace.json"
     if [ ! -f ${ws_path} ]; then
       return
